@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.utils.translation import ugettext as _
+
 # Create your models here.
 
 class Item(models.Model):
@@ -83,28 +85,44 @@ class Item(models.Model):
         return self.name
 
 
-class ItemAttribute(models.Model):
-    item = models.ForeignKey(Item)
-    fire = models.IntegerField()
-    water = models.IntegerField()
-    wind = models.IntegerField()
-    earth = models.IntegerField()
-    elec = models.IntegerField()
-    light = models.IntegerField()
-    dark = models.IntegerField()
-    noprop = models.IntegerField()
-    firer = models.IntegerField()
-    waterr = models.IntegerField()
-    windr = models.IntegerField()
-    earthr = models.IntegerField()
-    elecr = models.IntegerField()
-    lightr = models.IntegerField()
-    darkr = models.IntegerField()
-    nopropr = models.IntegerField()
-    physicalr = models.IntegerField()
-    gunr = models.IntegerField()
-    shadow = models.IntegerField()
-    shadowr = models.IntegerField()
+class Attribute(models.Model):
+    FIRE = 1
+    WATER = 2
+    WIND = 3
+    EARTH = 4
+    ELEC = 5
+    LIGHT = 6
+    DARK = 7
+    NOPROP = 8
+    PHYSICAL = 9
+    GUN = 10
+    SHADOW = 11
+    ELEMENT_CHOICES = (
+        (FIRE, _('Fire')),
+        (WATER, _('Water')),
+        (WIND, _('Wind')),
+        (EARTH, _('Earth')),
+        (ELEC, _('Elec')),
+        (LIGHT, _('Light')),
+        (DARK, _('Dark')),
+        (NOPROP, _('NoProp')),
+        (PHYSICAL, _('Physical')),
+        (GUN, _('Gun')),
+        (SHADOW, _('Shadow')),
+    )
+    element = models.IntegerField(choices=ELEMENT_CHOICES)
+    resist = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return unicode(self.item)
+        return '%s%s' % \
+            (self.get_element_display(), _('R') if self.resist else '')
+
+
+class ItemAttribute(models.Model):
+    item = models.ForeignKey(Item)
+    attr = models.ForeignKey(Attribute, default=None)
+    value = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return '%s %s %d' % \
+            (unicode(self.item), unicode(self.attr), self.value)
