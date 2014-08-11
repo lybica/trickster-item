@@ -82,3 +82,29 @@ class Item(models.Model):
     def __unicode__(self):
         return self.name
 
+
+class ItemAttribute(models.Model):
+    item = models.ForeignKey(Item)
+    fire = models.IntegerField()
+    water = models.IntegerField()
+    wind = models.IntegerField()
+    earth = models.IntegerField()
+    elec = models.IntegerField()
+    light = models.IntegerField()
+    dark = models.IntegerField()
+    noprop = models.IntegerField()
+    firer = models.IntegerField()
+    waterr = models.IntegerField()
+    windr = models.IntegerField()
+    earthr = models.IntegerField()
+    elecr = models.IntegerField()
+    lightr = models.IntegerField()
+    darkr = models.IntegerField()
+    nopropr = models.IntegerField()
+    physicalr = models.IntegerField()
+    gunr = models.IntegerField()
+    shadow = models.IntegerField()
+    shadowr = models.IntegerField()
+
+    def __unicode__(self):
+        return unicode(self.item)
