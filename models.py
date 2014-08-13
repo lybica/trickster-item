@@ -98,24 +98,28 @@ class Attribute(models.Model):
     GUN = 10
     SHADOW = 11
     ELEMENT_CHOICES = (
-        (FIRE, _('Fire')),
-        (WATER, _('Water')),
-        (WIND, _('Wind')),
-        (EARTH, _('Earth')),
-        (ELEC, _('Elec')),
-        (LIGHT, _('Light')),
-        (DARK, _('Dark')),
-        (NOPROP, _('NoProp')),
-        (PHYSICAL, _('Physical')),
-        (GUN, _('Gun')),
-        (SHADOW, _('Shadow')),
+        (FIRE, 'Fire'),
+        (WATER, 'Water'),
+        (WIND, 'Wind'),
+        (EARTH, 'Earth'),
+        (ELEC, 'Elec'),
+        (LIGHT, 'Light'),
+        (DARK, 'Dark'),
+        (NOPROP, 'NoProp'),
+        (PHYSICAL, 'Physical'),
+        (GUN, 'Gun'),
+        (SHADOW, 'Shadow'),
     )
     element = models.IntegerField(choices=ELEMENT_CHOICES)
     resist = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    @property
+    def field(self):
         return '%s%s' % \
-            (self.get_element_display(), _('R') if self.resist else '')
+            (self.get_element_display(), 'R' if self.resist else '')
+
+    def __unicode__(self):
+        return _(self.field)
 
 
 class ItemAttribute(models.Model):
@@ -126,3 +130,26 @@ class ItemAttribute(models.Model):
     def __unicode__(self):
         return '%s %s %d' % \
             (unicode(self.item), unicode(self.attr), self.value)
+
+
+class PresentItem(models.Model):
+    item = models.OneToOneField(Item)
+    ptype = models.IntegerField()
+    count = models.IntegerField()
+
+    def __unicode__(self):
+        return unicode(self.item)
+
+    def open(self):
+        pass
+
+
+class DropItem(models.Model):
+    item = models.ForeignKey(PresentItem)
+    drop = models.ForeignKey(Item)
+    rate = models.SmallIntegerField()
+    count = models.IntegerField()
+
+    def __unicode__(self):
+        return '%s > %s(%d) %d' % \
+            (unicode(self.item), unicode(self.drop), self.count, self.rate)
