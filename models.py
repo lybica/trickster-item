@@ -2,6 +2,8 @@ from django.db import models
 
 from django.utils.translation import ugettext as _
 
+import random
+
 # Create your models here.
 
 class Item(models.Model):
@@ -141,7 +143,23 @@ class PresentItem(models.Model):
         return unicode(self.item)
 
     def open(self):
-        pass
+        stat = self.dropitem_set.all()
+        raffle = []
+        received = []
+        for s in stat:
+            raffle += [s] * s.rate
+        def pick(raffle, count):
+            for n in xrange(count):
+                picked = random.choice(raffle)
+                yield [picked.drop] * picked.count
+        return list(pick(raffle, self.count))
+
+    def open_verbose(self):
+        def verbose(itemsets):
+            for itemset in itemsets:
+                yield _('%(item)s %(count)d') % \
+                    {'item': itemset[0], 'count': len(itemset)}
+        return list(verbose(self.open()))
 
 
 class DropItem(models.Model):
