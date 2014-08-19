@@ -30,7 +30,7 @@
 <Item: ブラックチョコレート>]
 ```
 ```
->>> fron django.utils import translation as l10n
+>>> from django.utils import translation as l10n
 >>> l10n.activate('ja')
 >>> box = PresentItem.objects.get(item__name='専用パラベンスボックスダブル')
 >>> print '\n'.join(box.open_verbose())
